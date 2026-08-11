@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schemes — FarmaSchema</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">🌾</span>
+        <span>
+          <span class="brand-name">FarmaSchema</span>
+          <span class="brand-subtitle">Agricultural Scheme Discovery & Matching Tool</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="dashboard.html">Find schemes</a>
+        <a href="scheme.html">Browse all schemes</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============ BROWSE ALL SCHEMES (shown when there is no ?id=... in the URL) ============ -->
+  <section class="section" id="browse-view">
+    <div class="container">
+      <div class="section-heading" style="margin-bottom:32px;">
+        <h2>All agricultural schemes</h2>
+        <p>Browse every scheme in our dataset, or <a href="dashboard.html">check which ones match your profile</a>.</p>
+      </div>
+      <div id="browse-loading" class="scheme-list">
+        <div class="skeleton"></div>
+        <div class="skeleton"></div>
+      </div>
+      <div id="browse-grid" class="scheme-browse-grid" style="display:none;"></div>
+    </div>
+  </section>
+
+  <!-- ============ SINGLE SCHEME DETAIL (shown when the URL has ?id=scheme-id) ============ -->
+  <section class="section" id="detail-view" style="display:none;">
+    <div class="container">
+
+      <a href="scheme.html" style="display:inline-block; margin-bottom:20px; font-size:14px;">&larr; Back to all schemes</a>
+
+      <div id="detail-loading" class="skeleton" style="height:200px;"></div>
+
+      <div id="detail-content" style="display:none;">
+        <div class="detail-grid">
+          <div>
+            <h1 id="detail-name" style="font-size:28px;"></h1>
+            <p id="detail-short" style="color:var(--color-text-muted); font-size:16px;"></p>
+
+            <div class="detail-section">
+              <h2>About this scheme</h2>
+              <p id="detail-description"></p>
+            </div>
+
+            <div class="detail-section">
+              <h2>Benefits</h2>
+              <p id="detail-benefits"></p>
+            </div>
+
+            <div class="detail-section">
+              <h2>Eligibility</h2>
+              <ul id="detail-eligibility"></ul>
+            </div>
+
+            <div class="detail-section">
+              <h2>How to apply</h2>
+              <p id="detail-application"></p>
+            </div>
+          </div>
+
+          <div>
+            <div class="card sidebar-card" id="relevance-sidebar" style="display:none;">
+              <div class="relevance-label">Your relevance score</div>
+              <div class="relevance-value" id="detail-relevance-value">—</div>
+              <div class="relevance-bar"><div class="relevance-fill" id="detail-relevance-fill"></div></div>
+
+              <div style="margin-top:16px;">
+                <div style="font-size:13px; font-weight:600; margin-bottom:8px;">Why this scheme</div>
+                <ul class="attr-list" id="detail-matched"></ul>
+                <ul class="attr-list" id="detail-unknown" style="margin-top:6px;"></ul>
+              </div>
+            </div>
+
+            <div class="card sidebar-card">
+              <button class="btn btn-secondary btn-block" id="detail-bookmark-btn">☆ Save this scheme</button>
+              <a class="btn btn-primary btn-block" id="detail-official-link" href="#" target="_blank" rel="noopener" style="margin-top:10px;">Go to official application page ↗</a>
+              <p class="verify-note" id="detail-verify-note"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="disclaimer" style="margin-top:12px;">
+          <span class="icon">ℹ️</span>
+          <span>This is an AI-assisted relevance screening tool. Please verify the latest official eligibility criteria before applying.</span>
+        </div>
+      </div>
+
+      <div id="detail-error" class="state-box card" style="display:none;">
+        <div class="icon">⚠️</div>
+        <p id="detail-error-message">We couldn't find that scheme.</p>
+        <a href="scheme.html" class="btn btn-secondary">Back to all schemes</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Scheme data may be out of date. Always check official sources before applying.</span>
+      <span><a href="index.html">Back to home</a></span>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/scheme.js"></script>
+</body>
+</html>

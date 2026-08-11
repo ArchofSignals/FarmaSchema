@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find your schemes — FarmaSchema</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <a href="index.html" class="brand">
+        <span class="brand-mark">🌾</span>
+        <span>
+          <span class="brand-name">FarmaSchema</span>
+          <span class="brand-subtitle">Agricultural Scheme Discovery & Matching Tool</span>
+        </span>
+      </a>
+      <nav class="site-nav">
+        <a href="dashboard.html">Find schemes</a>
+        <a href="scheme.html">Browse all schemes</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="section" style="padding-bottom:0;">
+    <div class="container">
+      <div class="section-heading" style="margin-bottom:28px;">
+        <h2>Your farming profile</h2>
+        <p>Fill this in once — we'll rank schemes against it right away.</p>
+      </div>
+
+      <form id="profile-form" class="card" novalidate>
+        <div class="form-grid">
+
+          <div class="form-field" data-field="state">
+            <label for="state">State *</label>
+            <select id="state" name="state">
+              <option value="">Select your state</option>
+              <option>Andhra Pradesh</option><option>Arunachal Pradesh</option>
+              <option>Assam</option><option>Bihar</option><option>Chhattisgarh</option>
+              <option>Goa</option><option>Gujarat</option><option>Haryana</option>
+              <option>Himachal Pradesh</option><option>Jharkhand</option><option>Karnataka</option>
+              <option>Kerala</option><option>Madhya Pradesh</option><option>Maharashtra</option>
+              <option>Manipur</option><option>Meghalaya</option><option>Mizoram</option>
+              <option>Nagaland</option><option>Odisha</option><option>Punjab</option>
+              <option>Rajasthan</option><option>Sikkim</option><option>Tamil Nadu</option>
+              <option>Telangana</option><option>Tripura</option><option>Uttar Pradesh</option>
+              <option>Uttarakhand</option><option>West Bengal</option>
+            </select>
+            <span class="field-error">Please select your state.</span>
+          </div>
+
+          <div class="form-field" data-field="district">
+            <label for="district">District <span class="hint">(optional)</span></label>
+            <input type="text" id="district" name="district" placeholder="e.g. Bengaluru Rural">
+          </div>
+
+          <div class="form-field" data-field="crop">
+            <label for="crop">Main crop *</label>
+            <select id="crop" name="crop">
+              <option value="">Select your main crop</option>
+              <option>Rice</option><option>Wheat</option><option>Maize</option>
+              <option>Millets</option><option>Pulses</option><option>Cotton</option>
+              <option>Sugarcane</option><option>Fruits</option><option>Vegetables</option>
+              <option>Spices</option><option>Flowers</option><option>Bamboo</option>
+              <option>Other</option>
+            </select>
+            <span class="field-error">Please select your main crop.</span>
+          </div>
+
+          <div class="form-field" data-field="land_size">
+            <label for="land_size">Land size (in acres) *</label>
+            <input type="number" id="land_size" name="land_size" min="0" step="0.1" placeholder="e.g. 2">
+            <span class="field-error">Enter a valid land size (0 or more).</span>
+          </div>
+
+          <div class="form-field" data-field="category">
+            <label for="category">Farmer category *</label>
+            <select id="category" name="category">
+              <option value="">Select your category</option>
+              <option>Marginal Farmer</option>
+              <option>Small Farmer</option>
+              <option>Medium Farmer</option>
+              <option>Large Farmer</option>
+              <option>Landless / Tenant Farmer</option>
+            </select>
+            <span class="field-error">Please select your farmer category.</span>
+          </div>
+
+          <div class="form-field" data-field="irrigation">
+            <label>Irrigation available? *</label>
+            <div class="radio-row">
+              <label class="radio-pill">
+                <input type="radio" name="irrigation" value="Yes">
+                <span>Yes</span>
+              </label>
+              <label class="radio-pill">
+                <input type="radio" name="irrigation" value="No">
+                <span>No</span>
+              </label>
+            </div>
+            <span class="field-error">Please tell us if you have irrigation.</span>
+          </div>
+
+          <div class="form-field full" data-field="details">
+            <label for="details">Anything else about your farm? <span class="hint">(optional)</span></label>
+            <textarea id="details" name="details" rows="2" placeholder="e.g. interested in organic farming, own a diesel pump, part of an FPO..."></textarea>
+          </div>
+
+        </div>
+
+        <div style="margin-top:22px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+          <button type="submit" class="btn btn-primary" id="submit-btn">Find matching schemes</button>
+          <span id="form-status" style="font-size:13.5px; color:var(--color-text-muted);"></span>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section" id="results-section" style="display:none;">
+    <div class="container">
+
+      <div class="profile-summary" id="profile-summary"></div>
+
+      <details class="how-it-works" style="cursor:pointer;">
+        <summary style="cursor:pointer; list-style:none;">
+          <h3 style="display:inline; margin:0;">ℹ️ How the AI works</h3>
+        </summary>
+        <p style="margin-top:10px;">
+          Your profile is converted into text features using TF-IDF (Term
+          Frequency–Inverse Document Frequency). The system compares your
+          profile text with each scheme's description using cosine
+          similarity, and ranks schemes by how textually close they are to
+          your profile. Separately, simple rule checks compare your state,
+          crop, category, land size and irrigation directly against each
+          scheme's stated criteria — that's what powers the
+          "why this scheme" list on every card.
+        </p>
+      </details>
+
+      <div class="results-header">
+        <h2 id="results-title">Ranked schemes for you</h2>
+        <span class="results-count" id="results-count"></span>
+      </div>
+
+      <div id="results-container" class="scheme-list"></div>
+    </div>
+  </section>
+
+  <section class="container" id="loading-state" style="display:none; padding: 24px;">
+    <div class="scheme-list">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </div>
+  </section>
+
+  <section class="container" id="error-state" style="display:none; padding: 24px 24px 60px;">
+    <div class="state-box card">
+      <div class="icon">⚠️</div>
+      <p id="error-message">Something went wrong.</p>
+      <button class="btn btn-secondary" id="retry-btn">Try again</button>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Relevance scores are a screening aid, not a legal guarantee of eligibility.</span>
+      <span><a href="index.html">Back to home</a></span>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
