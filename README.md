@@ -24,19 +24,22 @@ farmaschema/
 │   ├── index.html             Landing page
 │   ├── dashboard.html         Farmer profile form + ranked results
 │   ├── scheme.html            Browse all schemes / single scheme detail
+│   ├── admin.html             Admin page for appending new scheme JSON
 │   ├── css/
 │   │   └── style.css
 │   └── js/
 │       ├── app.js             Shared helpers (client id, API wrapper, toast)
 │       ├── dashboard.js        Form handling + rendering ranked results
-│       └── scheme.js           Browse grid + single scheme detail page
+│       ├── scheme.js           Browse grid + single scheme detail page
+│       └── admin.js            Admin JSON upload / paste-to-append flow
 │
 ├── backend/
 │   ├── app.py                 Flask app: REST API + serves the frontend
 │   ├── recommendation.py      TF-IDF + cosine similarity + rule-based matching
 │   ├── database.py            SQLite bookmarks (no personal info required)
 │   ├── data/
-│   │   └── schemes.json       20 real central government schemes
+│   │   ├── schemes.json       Scheme database used by recommendations
+│   │   └── farmaschema.db     Local SQLite bookmarks DB (ignored by git)
 │   └── requirements.txt
 │
 ├── README.md
@@ -114,6 +117,51 @@ cd backend
 python app.py
 ```
 
+If port `5000` is already in use, you can choose another port:
+
+```powershell
+$env:PORT="5050"
+python app.py
+```
+
+---
+
+## 4.1 Admin scheme updates
+
+The admin section is available through a separate link in the site header,
+or directly at:
+
+```text
+http://127.0.0.1:5000/admin.html
+```
+
+It lets an admin append new scheme data in two ways:
+
+1. Upload a local `.json` file containing one scheme object or an array of
+   scheme objects.
+2. Write or paste JSON directly in the admin page and append it.
+
+Both options append to `backend/data/schemes.json`. The backend validates
+required fields, replaces any incoming `id` with the next numeric ID, and
+then saves the adjusted scheme data. If the current dataset has no numeric
+IDs yet, the first appended scheme starts at the current scheme count + 1.
+
+For local development, the default admin token is:
+
+```text
+dev-admin-token
+```
+
+The admin page does not store this token. If you refresh the page, enter
+the token and authenticate again.
+
+Before a demo outside your machine or any deployment, set a stronger token:
+
+```powershell
+$env:FARMASCHEMA_ADMIN_TOKEN="your-strong-token"
+python app.py
+```
+
 ---
 
 ## 5. Verifying each part works (do these in order)
@@ -136,6 +184,12 @@ window), open a **second** PowerShell window and run:
 curl http://127.0.0.1:5000/api/health
 curl http://127.0.0.1:5000/api/schemes
 curl http://127.0.0.1:5000/api/schemes/pm-kisan
+```
+
+To test the admin API count/data endpoint:
+
+```powershell
+curl -H "X-Admin-Token: dev-admin-token" http://127.0.0.1:5000/api/admin/schemes
 ```
 
 **c) Test the full flow in the browser:**
@@ -193,6 +247,9 @@ easy to explain and easy to defend under questioning.
 | POST | `/api/recommend` | Body: farmer profile JSON → ranked recommendations |
 | POST | `/api/bookmark` | Body: `{client_id, scheme_id, action}` (`action`: `add` or `remove`) |
 | GET | `/api/bookmarks?client_id=...` | All bookmarks for that browser |
+| GET | `/api/admin/schemes` | Admin-only: return the scheme dataset |
+| POST | `/api/admin/schemes` | Admin-only: append one scheme object or an array of scheme objects |
+| PUT | `/api/admin/schemes` | Admin-only: replace the full scheme dataset |
 
 ---
 
@@ -201,6 +258,10 @@ easy to explain and easy to defend under questioning.
 No Aadhaar number, phone number, bank details or password is ever
 collected. Bookmarks are tied to a random `client_id` generated in the
 browser's `localStorage` — not to any personal identifier.
+
+Local runtime files such as `backend/data/farmaschema.db`, Python
+`__pycache__/` folders, virtual environments, `.env` files and logs are
+ignored through `.gitignore`.
 
 ---
 
@@ -214,3 +275,7 @@ browser's `localStorage` — not to any personal identifier.
 * The rule-based layer is intentionally simple (state / crop / category /
   land size / irrigation) — it does not model complex real eligibility
   conditions like income ceilings or land-ownership documentation.
+* The admin section uses a lightweight token check intended for demos and
+  local development, not a full user/account permission system.
+* `debug=True` and open CORS are convenient during development, but should
+  be tightened before deployment.

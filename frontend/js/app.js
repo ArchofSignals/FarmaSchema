@@ -30,10 +30,15 @@ const FarmaSchema = (() => {
    */
   async function apiRequest(path, options = {}) {
     let response;
+    const headers = {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    };
+
     try {
       response = await fetch(path, {
-        headers: { "Content-Type": "application/json" },
         ...options,
+        headers,
       });
     } catch (networkError) {
       // The backend isn't reachable at all.
